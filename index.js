@@ -2,8 +2,11 @@ const express = require("express");
 const app = express();
 const port = 8080;
 
+app.set("view engine", "ejs");
+
 app.get("/", (request, response) => {
-    response.send("I am alive!");
+    let result = {name: "Ivo"};
+    response.render("index", result);
 });
 
 app.listen(port, () => {
