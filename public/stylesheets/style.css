@@ -909,6 +909,13 @@ html {
     border-color: color-mix(in oklab, var(--fallback-p,oklch(var(--p)/1)) 90%, black);
   }
 
+  .btn-outline.btn-accent:hover {
+    --tw-text-opacity: 1;
+    color: var(--fallback-ac,oklch(var(--ac)/var(--tw-text-opacity)));
+    background-color: color-mix(in oklab, var(--fallback-a,oklch(var(--a)/1)) 90%, black);
+    border-color: color-mix(in oklab, var(--fallback-a,oklch(var(--a)/1)) 90%, black);
+  }
+
   .btn-disabled:hover,
     .btn[disabled]:hover,
     .btn:disabled:hover {
@@ -986,33 +993,6 @@ html {
   text-decoration-line: underline;
 }
 
-.stack {
-  display: inline-grid;
-  place-items: center;
-  align-items: flex-end;
-}
-
-.stack > * {
-  grid-column-start: 1;
-  grid-row-start: 1;
-  transform: translateY(10%) scale(0.9);
-  z-index: 1;
-  width: 100%;
-  opacity: 0.6;
-}
-
-.stack > *:nth-child(2) {
-  transform: translateY(5%) scale(0.95);
-  z-index: 2;
-  opacity: 0.8;
-}
-
-.stack > *:nth-child(1) {
-  transform: translateY(0) scale(1);
-  z-index: 3;
-  opacity: 1;
-}
-
 .btm-nav > * .label {
   font-size: 1rem;
   line-height: 1.5rem;
@@ -1032,6 +1012,10 @@ html {
 
   .btn-primary {
     --btn-color: var(--fallback-p);
+  }
+
+  .btn-accent {
+    --btn-color: var(--fallback-a);
   }
 
   .btn-neutral {
@@ -1056,9 +1040,19 @@ html {
     --btn-color: var(--p);
   }
 
+  .btn-accent {
+    --btn-color: var(--a);
+  }
+
   .btn-neutral {
     --btn-color: var(--n);
   }
+}
+
+.btn-accent {
+  --tw-text-opacity: 1;
+  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-text-opacity)));
+  outline-color: var(--fallback-a,oklch(var(--a)/1));
 }
 
 .btn-neutral {
@@ -1089,6 +1083,18 @@ html {
   color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity)));
   background-color: color-mix(in oklab, var(--fallback-p,oklch(var(--p)/1)) 90%, black);
   border-color: color-mix(in oklab, var(--fallback-p,oklch(var(--p)/1)) 90%, black);
+}
+
+.btn-outline.btn-accent {
+  --tw-text-opacity: 1;
+  color: var(--fallback-a,oklch(var(--a)/var(--tw-text-opacity)));
+}
+
+.btn-outline.btn-accent.btn-active {
+  --tw-text-opacity: 1;
+  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-text-opacity)));
+  background-color: color-mix(in oklab, var(--fallback-a,oklch(var(--a)/1)) 90%, black);
+  border-color: color-mix(in oklab, var(--fallback-a,oklch(var(--a)/1)) 90%, black);
 }
 
 .btn.btn-disabled,
@@ -1253,12 +1259,6 @@ html {
   outline-offset: 2px;
 }
 
-.mockup-phone .display {
-  overflow: hidden;
-  border-radius: 40px;
-  margin-top: -25px;
-}
-
 .mockup-browser .mockup-browser-toolbar .input {
   position: relative;
   margin-left: auto;
@@ -1370,6 +1370,27 @@ html {
   }
 }
 
+.btn-sm {
+  height: 2rem;
+  min-height: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.btn-square:where(.btn-sm) {
+  height: 2rem;
+  width: 2rem;
+  padding: 0px;
+}
+
+.btn-circle:where(.btn-sm) {
+  height: 2rem;
+  width: 2rem;
+  border-radius: 9999px;
+  padding: 0px;
+}
+
 .card-compact .card-body {
   padding: 1rem;
   font-size: 0.875rem;
@@ -1394,16 +1415,20 @@ html {
   margin-top: 1rem;
 }
 
+.flex {
+  display: flex;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
 
-.w-full {
-  width: 100%;
-}
-
 .w-96 {
   width: 24rem;
+}
+
+.w-full {
+  width: 100%;
 }
 
 .max-w-md {
@@ -1414,8 +1439,20 @@ html {
   max-width: 20rem;
 }
 
+.flex-row {
+  flex-direction: row;
+}
+
+.items-baseline {
+  align-items: baseline;
+}
+
 .justify-end {
   justify-content: flex-end;
+}
+
+.gap-2 {
+  gap: 0.5rem;
 }
 
 .bg-base-200 {
@@ -1423,24 +1460,32 @@ html {
   background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
 }
 
-.bg-primary {
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
-}
-
 .bg-error {
   --tw-bg-opacity: 1;
   background-color: var(--fallback-er,oklch(var(--er)/var(--tw-bg-opacity)));
 }
 
-.bg-error-content {
+.bg-primary {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
+}
+
+.pt-3 {
+  padding-top: 0.75rem;
 }
 
 .text-center {
@@ -1452,8 +1497,18 @@ html {
   line-height: 1;
 }
 
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
 .font-bold {
   font-weight: 700;
+}
+
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
 .text-primary-content {
@@ -1461,7 +1516,7 @@ html {
   color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity)));
 }
 
-.text-black {
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
+.brightness-50 {
+  --tw-brightness: brightness(.5);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }

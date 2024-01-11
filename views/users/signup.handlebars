@@ -1,13 +1,12 @@
 <div class="hero min-h-screen bg-base-200">
     <div class="hero-content">
         <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Prijava korisnika</h1>
+            <h1 class="text-5xl font-bold">Registracija korisnika</h1>
 
             {{#if result.display_form}}
             <form method="post" action="/users/signup">
                 <div class="py-6">
                     <div>
-                        <div>
                         <label class="form-control w-full max-w-xs">
                             <div class="label">
                                 <span class="label-text">Ime i prezime</span>
@@ -16,7 +15,7 @@
                                 class="input input-bordered w-full max-w-xs" required="" />
                         </label>
                     </div>
-                        <div>
+                    <div>
                         <label class="form-control w-full max-w-xs">
                             <div class="label">
                                 <span class="label-text">E-mail adresa</span>
@@ -30,20 +29,19 @@
                             <div class="label">
                                 <span class="label-text">Zaporka</span>
                             </div>
-                            <input type="password" name="password_check" placeholder="Upišite svoju zaporku"
+                            <input type="password" name="password" placeholder="Upišite svoju zaporku"
                                 class="input input-bordered w-full max-w-xs" />
                         </label>
                     </div>
                     <div>
                         <label class="form-control w-full max-w-xs">
                             <div class="label">
-                                <span class="label-text">Provjera zaporke</span>
+                                <span class="label-text">Potvrda zaporke</span>
                             </div>
                             <input type="password" name="password_check" placeholder="Ponovite svoju zaporku"
                                 class="input input-bordered w-full max-w-xs" />
                         </label>
                     </div>
-                </div>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Potvrdi" />
                 <input type="reset" class="btn btn-neutral" value="Poništi" />
@@ -64,6 +62,19 @@
             </div>
             {{/if}}
 
+            {{#if result.database_error}}
+            <div class="mt-4">
+                <div class="card w-96 bg-error text-black">
+                    <div class="card-body">
+                        <h2 class="card-title">Greška!</h2>
+                        <p>
+                            Dogodila se greška prilikom spremanja podataka, kontaktirajte administratora!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+
             {{#if result.success}}
             <div class="mt-4">
                 <div class="card w-96 bg-primary text-primary-content">
@@ -73,8 +84,20 @@
                             Uspješno ste se registrirali, možete nastaviti s radom!
                         </p>
                         <div class="card-actions justify-end">
-                            <a class="btn" href="/users/signin  ">Nastavi na prijavu</a>
+                            <a class="btn" href="/users/signin">Nastavi na prijavu</a>
                         </div>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+            {{#if result.email_in_use}}
+            <div class="mt-4">
+                <div class="card w-96 bg-error text-black">
+                    <div class="card-body">
+                        <h2 class="card-title">Greška!</h2>
+                        <p>
+                            E-mail adresa koju ste unijeli je već u upotrebi!
+                        </p>
                     </div>
                 </div>
             </div>
