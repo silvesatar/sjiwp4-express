@@ -4,7 +4,6 @@ const Joi = require("joi");
 const { db } = require("../services/db.js");
 const { getUserJwt, authRequired, checkEmailUnique } = require("../services/auth.js");
 const bcrypt = require("bcrypt");
-const { restart } = require("nodemon");
 
 // GET /users/data
 router.get("/data", authRequired, function (req, res, next) {
@@ -18,7 +17,7 @@ const schema_data = Joi.object({
   password: Joi.string().min(3).max(50).allow(null, "")
 });
 
-//POST /users/data
+// POST /users/data
 router.post("/data", authRequired, function (req, res, next) {
   // do validation
   const result = schema_data.validate(req.body);
@@ -53,10 +52,11 @@ router.post("/data", authRequired, function (req, res, next) {
   let passwordChanged = false;
   let passwordHash;
   if (newPassword && newPassword.length > 0) {
-    passwordHash = bcrypt.hashSync(newPassword, 10)
+    passwordHash = bcrypt.hashSync(newPassword, 10);
     passwordChanged = true;
     dataChanged.push(passwordHash);
   }
+
   if (!emailChanged && !nameChanged && !passwordChanged) {
     res.render("users/data", { result: { display_form: true } });
     return;
@@ -67,7 +67,7 @@ router.post("/data", authRequired, function (req, res, next) {
   if (nameChanged) query += " name = ?,";
   if (passwordChanged) query += " password = ?,";
   query = query.slice(0, -1);
-  query += " WHERE email= ?;";
+  query += " WHERE email = ?;";
   dataChanged.push(currentUser.email);
 
   const stmt = db.prepare(query);
@@ -78,8 +78,6 @@ router.post("/data", authRequired, function (req, res, next) {
   } else {
     res.render("users/data", { result: { database_error: true } });
   }
-
-  res.render("users/data", { result: { display_form: true } });
 });
 
 // GET /users/signout
