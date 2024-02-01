@@ -27,6 +27,11 @@ function authRequired(req, res, next) {
     next();
 }
 
+function adminRequired(req, res, next) {
+    if (!req.user || req.user.role !== "admin") throw new Error("Dopušteno samo administratorima.");
+    next();
+}
+
 // MIDDLEWARE FOR PARSING AUTH COOKIE
 function parseAuthCookie(req, res, next) {
     const token = req.cookies[process.env.AUTH_COOKIE_NAME];
@@ -39,6 +44,7 @@ function parseAuthCookie(req, res, next) {
     }
     req.user = result;
     res.locals.user = result;
+    res.locals.user.is_admin = result.role === "admin" ? true : false;
     next();
 }
 
@@ -57,5 +63,6 @@ module.exports = {
     getUserJwt,
     authRequired,
     parseAuthCookie,
-    checkEmailUnique
+    checkEmailUnique,
+    adminRequired
 };
