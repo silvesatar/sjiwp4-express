@@ -159,7 +159,7 @@ router.post("/signup", function (req, res, next) {
 
   const passwordHash = bcrypt.hashSync(req.body.password, 10);
   const stmt2 = db.prepare("INSERT INTO users (email, password, name, signed_at, role) VALUES (?, ?, ?, ?, ?);");
-  const insertResult = stmt2.run(req.body.email, passwordHash, req.body.name, new Date().toISOString, "user");
+  const insertResult = stmt2.run(req.body.email, passwordHash, req.body.name, new Date().toISOString(), "user");
 
   if (insertResult.changes && insertResult.changes === 1) {
     res.render("users/signup", { result: { success: true } });

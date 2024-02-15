@@ -28,7 +28,7 @@ function authRequired(req, res, next) {
 }
 
 function adminRequired(req, res, next) {
-    if (!req.user || req.user.role !== "admin") throw new Error("Dopušteno samo administratorima.");
+    if (!req.user || req.user.role !== "admin") throw new Error("Dopušteno samo administratorima");
     next();
 }
 
