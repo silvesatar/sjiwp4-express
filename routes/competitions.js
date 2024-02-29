@@ -59,11 +59,6 @@ router.get("/edit/:id", adminRequired, function (req, res, next) {
     res.render("competitions/form", { result: { display_form: true, edit: selectResult } });
 });
 
-// GET /competitions/edit
-router.post("/edit  ", adminRequired, function (req, res, next) {
-    res.render("competitions/form", { result: { display_form: true } });
-});
-
 // SCHEMA edit
 const schema_edit = Joi.object({
     id: Joi.number().integer().positive().required(),
@@ -80,6 +75,7 @@ router.post("/edit", adminRequired, function (req, res, next) {
         res.render("competitions/form", { result: { validation_error: true, display_form: true } });
         return;
     }
+
     const stmt = db.prepare("UPDATE competitions SET name = ?, description = ?, apply_till = ? WHERE id = ?;");
     const updateResult = stmt.run(req.body.name, req.body.description, req.body.apply_till, req.body.id);
 
@@ -89,6 +85,7 @@ router.post("/edit", adminRequired, function (req, res, next) {
         res.render("competitions/form", { result: { database_error: true } });
     }
 });
+
 // GET /competitions/add
 router.get("/add", adminRequired, function (req, res, next) {
     res.render("competitions/form", { result: { display_form: true } });
@@ -100,7 +97,6 @@ const schema_add = Joi.object({
     description: Joi.string().min(3).max(1000).required(),
     apply_till: Joi.date().iso().required()
 });
-
 
 // POST /competitions/add
 router.post("/add", adminRequired, function (req, res, next) {
@@ -122,3 +118,27 @@ router.post("/add", adminRequired, function (req, res, next) {
 });
 
 module.exports = router;
+
+// GET /competitions/apply
+router.get("/add", function (req, res, next) {
+    res.render("competitions/apply", { result: { display_form: true } });
+});
+
+// GET /competitions/apply
+router.get("/add", function (req, res, next) {
+    // do validation
+    const result = schema_add.validate(req.body);
+    if (result.error) {
+        res.render("competitions/form", { result: { validation_error: true, display_form: true } });
+        return;
+    }
+
+    const stmt = db.prepare("INSERT INTO apply_comp (id_user, id_competition, score, date) VALUES (?, ?, ?, ?);");
+    const insertResult = stmt.run(req.users.id, req.competitions.id, req.body.score, req.body.apply_till);
+
+    if (insertResult.changes && insertResult.changes === 1) {
+        res.render("competitions/form", { result: { success: true } });
+    } else {
+        res.render("competitions/form", { result: { database_error: true } });
+    }
+});
