@@ -118,7 +118,7 @@ router.post("/add", adminRequired, function (req, res, next) {
 });
 
 // GET /competitions/login/:id
-router.get("/login/:id", function (req, res, next) {
+router.get("/apply/:id", function (req, res, next) {
 
     //validation
     const result = schema_id.validate(req.params);
@@ -133,28 +133,24 @@ router.get("/login/:id", function (req, res, next) {
 
     console.log(checkResult1);
 
-    if (checkResult1["count(*)"] >= 1) {
-        res.render("competitions/form", { result: { database_error: true } });
-    }
-    else {
+
 
         // UPISIVANJE U BAZU
 
-        const stmt = db.prepare("INSERT INTO apply_comp (id_user, id_competition) VALUES (?, ?);");
-        const updateResult = stmt.run(req.user.sub, req.params.id);
+        const stmt = db.prepare("INSERT INTO apply_comp (id_user, id_competition, score, date) VALUES (?, ?, 0, ?);");
+        const updateResult = stmt.run(req.user.sub, req.params.id, new Date().toISOString());
 
         if (updateResult.changes && updateResult.changes === 1) {
             res.render("competitions/apply");
         } else {
             res.render("competitions/form", { result: { database_error: true } });
         }
-    }
 });
 
 // GET /competitions/apply/:id
 
-router.get("/apply/:id", function (req, res, next) {
+/*router.get("/apply/:id", function (req, res, next) {
     res.render("competitions/apply");
-});
+});*/
 
 module.exports = router;
