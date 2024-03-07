@@ -117,28 +117,44 @@ router.post("/add", adminRequired, function (req, res, next) {
     }
 });
 
-module.exports = router;
+// GET /competitions/login/:id
+router.get("/login/:id", function (req, res, next) {
 
-// GET /competitions/apply
-router.get("/add", function (req, res, next) {
-    res.render("competitions/apply", { result: { display_form: true } });
-});
-
-// GET /competitions/apply
-router.get("/add", function (req, res, next) {
-    // do validation
-    const result = schema_add.validate(req.body);
+    //validation
+    const result = schema_id.validate(req.params);
     if (result.error) {
-        res.render("competitions/form", { result: { validation_error: true, display_form: true } });
-        return;
+        throw new Error("Došlo je do greške!");
     }
 
-    const stmt = db.prepare("INSERT INTO apply_comp (id_user, id_competition, score, date) VALUES (?, ?, ?, ?);");
-    const insertResult = stmt.run(req.users.id, req.competitions.id, req.body.score, req.body.apply_till);
+    // PROVJERA JE LI KORISNIK VEĆ PRIJAVLJEN
 
-    if (insertResult.changes && insertResult.changes === 1) {
-        res.render("competitions/form", { result: { success: true } });
-    } else {
+    const checkStmt1 = db.prepare("SELECT count(*) FROM apply_comp WHERE id_user = ? AND id_competition = ?;");
+    const checkResult1 = checkStmt1.get(req.user.sub, req.params.id);
+
+    console.log(checkResult1);
+
+    if (checkResult1["count(*)"] >= 1) {
         res.render("competitions/form", { result: { database_error: true } });
     }
+    else {
+
+        // UPISIVANJE U BAZU
+
+        const stmt = db.prepare("INSERT INTO apply_comp (id_user, id_competition) VALUES (?, ?);");
+        const updateResult = stmt.run(req.user.sub, req.params.id);
+
+        if (updateResult.changes && updateResult.changes === 1) {
+            res.render("competitions/apply");
+        } else {
+            res.render("competitions/form", { result: { database_error: true } });
+        }
+    }
 });
+
+// GET /competitions/apply/:id
+
+router.get("/apply/:id", function (req, res, next) {
+    res.render("competitions/apply");
+});
+
+module.exports = router;

@@ -21,16 +21,16 @@
         {{#if result.edit}}
         <input type="hidden" name="id" value="{{result.edit.id}}" />
         {{/if}}
-        {{> form_buttons }}
+        {{ form_buttons }}
     </form>
     {{/if}}
 
     {{#if result.validation_error}}
-    {{> validation_error }}
+    {{ validation_error }}
     {{/if}}
 
     {{#if result.database_error}}
-    {{> database_error }}
+    {{ database_error }}
     {{/if}}
 
     {{#if result.success}}
