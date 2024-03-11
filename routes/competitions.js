@@ -133,7 +133,7 @@ router.get("/apply/:id", function (req, res, next) {
 
     console.log(checkResult1);
 
-
+    if (checkResult1["count(*)"] <= 0){
 
         // UPISIVANJE U BAZU
 
@@ -145,6 +145,10 @@ router.get("/apply/:id", function (req, res, next) {
         } else {
             res.render("competitions/form", { result: { database_error: true } });
         }
+    }
+    else{
+        restart.redner("competitions/form", { result: { database_error: true}})
+    }
 });
 
 // GET /competitions/apply/:id
