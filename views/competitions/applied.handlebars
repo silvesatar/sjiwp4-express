@@ -1,17 +1,15 @@
-<div class="" p-2>
+<!-- <div class="p-2">
     <div class="overflow-x-auto">
         <table class="table">
-            <!-- head -->
+
             <thead>
                 <tr>
                     <th>Redni broj</th>
                     <th>Ime</th>
                     <th>Broj bodova</th>
-                    <th>Rok prijave</th>
-                    <th>Autor</th>
                 </tr>
             </thead>
-            <!-- body -->
+            
             <tbody>
 
                 {{#each result.items}}
@@ -32,4 +30,20 @@
             </tbody>
         </table>
     </div>
+</div> -->
+<div class="p-2">
+    <div class="hero-content text-center">
+        <div class="max-w-md">
+            <p class="pt-3">
+                Uspješno ste prijavljeni na natjecanje
+            </p>
+            <p class="py-3 text-xs brightness-50">
+                {{message}}
+            </p>
+            <a href="/" class="btn btn-primary">Naslovnica</a>
+        </div>
+    </div>
+    {{#if result.display_form}}
+     <form action="/competitions/applied" method="get" class="flex flex-col gap-2"></form>
+     {{/if}}
 </div>

@@ -149,12 +149,63 @@ router.get("/apply/:id", function (req, res, next) {
     else{
         restart.redner("competitions/form", { result: { database_error: true}})
     }
-});
+}); 
 
 // GET /competitions/apply/:id
 
-/*router.get("/apply/:id", function (req, res, next) {
+/*router.get("/apply/:id", adminRequired, function (req, res, next) {
     res.render("competitions/apply");
 });*/
+
+/* router.get("/applied", adminRequired, function (req, res, next) {
+    res.render("competitions/form", { result: { display_form: true } });
+}); */
+
+
+// GET /competitions/score/:id
+router.get("/edit/:id", adminRequired, function (req, res, next) {
+    // do validation
+    const result1 = schema_id.validate(req.params);
+    if (result.error) {
+        throw new Error("Neispravan poziv");
+    }
+
+    const stmt = db.prepare("SELECT * FROM apply_comp WHERE id = ?;");
+    const selectResult1 = stmt.get(req.params.id);
+
+    if (!selectResult1) {
+        throw new Error("Neispravan poziv");
+    }
+
+    res.render("competitions/form", { applied: { display_form: true, edit: selectResult1 } });
+});
+
+// SCORE edit
+const score_edit = Joi.object({
+    id: Joi.number().integer().positive().required(),
+    name: Joi.string().min(3).max(50).required(),
+    description: Joi.string().min(3).max(1000).required(),
+    apply_till: Joi.date().iso().required(),
+    score: Joi.number().required(),
+});
+
+// POST /applied/edit
+router.post("/edit", adminRequired, function (req, res, next) {
+    // do validation
+    const result1 = score_edit.validate(req.body);
+    if (result.error) {
+        res.render("competitions/form", { result1: { validation_error: true, display_form: true } });
+        return;
+    }
+
+    const stmt = db.prepare("UPDATE apply_comp SET score =   ?, apply_till = ? WHERE id = ?;");
+    const updateResult1 = stmt.run(req.body.id_user, req.body.id_competition, req.body.score, req.body.date);
+
+    if (updateResult1.changes && updateResult1.changes === 1) {
+        res.redirect("/competitions");
+    } else {
+        res.render("competitions/form", { result: { database_error: true } });
+    }
+});
 
 module.exports = router;
