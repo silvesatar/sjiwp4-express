@@ -133,7 +133,7 @@ router.get("/apply/:id", function (req, res, next) {
 
     console.log(checkResult1);
 
-    if (checkResult1["count(*)"] <= 0){
+    if (checkResult1["count(*)"] <= 0) {
 
         // UPISIVANJE U BAZU
 
@@ -146,10 +146,10 @@ router.get("/apply/:id", function (req, res, next) {
             res.render("competitions/form", { result: { database_error: true } });
         }
     }
-    else{
-        restart.redner("competitions/form", { result: { database_error: true}})
+    else {
+        restart.redner("competitions/form", { result: { database_error: true } })
     }
-}); 
+});
 
 // GET /competitions/apply/:id
 
@@ -162,50 +162,67 @@ router.get("/apply/:id", function (req, res, next) {
 }); */
 
 
-// GET /competitions/score/:id
-router.get("/edit/:id", adminRequired, function (req, res, next) {
-    // do validation
-    const result1 = schema_id.validate(req.params);
-    if (result.error) {
-        throw new Error("Neispravan poziv");
-    }
+// 2. ZADATAK
 
-    const stmt = db.prepare("SELECT * FROM apply_comp WHERE id = ?;");
-    const selectResult1 = stmt.get(req.params.id);
+//GET /competitions/input_score/:id
 
-    if (!selectResult1) {
-        throw new Error("Neispravan poziv");
-    }
+router.get("/input_score/:id", adminRequired, function (req, res, next){
 
-    res.render("competitions/form", { applied: { display_form: true, edit: selectResult1 } });
+    const stmt = db.prepare(`SELECT c.name AS NazivNatjecanja., u.name AS Natjecatelj, a.id AS login_id, a.id_user, a.score
+    FROM competitions c, users u, apply_comp a
+    WHERE a.id_user = u.id AND a.id_competition = c.id NAD a.id_competition = ?;`
+    );
+
+    const result = stmt.all(req.params.id);
+
+    res.render("competitions/input_score", { result: { items:result }});
 });
 
-// SCORE edit
-const score_edit = Joi.object({
+// SCHEMA score
+const schema_score = Joi.object({
     id: Joi.number().integer().positive().required(),
-    name: Joi.string().min(3).max(50).required(),
-    description: Joi.string().min(3).max(1000).required(),
-    apply_till: Joi.date().iso().required(),
-    score: Joi.number().required(),
-});
+    score: Joi.number().min(1).max(1000).required()
+})
 
-// POST /applied/edit
-router.post("/edit", adminRequired, function (req, res, next) {
-    // do validation
-    const result1 = score_edit.validate(req.body);
-    if (result.error) {
-        res.render("competitions/form", { result1: { validation_error: true, display_form: true } });
+//POST /competitions/change_score/
+router.post("/change_score", authRequired, function (req, res, next){
+    const result = schema_score.validate(req.body);
+    if(result.error) {
+        throw new Error("Neispravan poziv");
         return;
     }
+    const stmt = db.prepare("UPDATE apply_comp SET score = ? WHERE id = ?");
+    const updateResult = stmt.run(req.body.score, req.body.id);
 
-    const stmt = db.prepare("UPDATE apply_comp SET score =   ?, apply_till = ? WHERE id = ?;");
-    const updateResult1 = stmt.run(req.body.id_user, req.body.id_competition, req.body.score, req.body.date);
-
-    if (updateResult1.changes && updateResult1.changes === 1) {
-        res.redirect("/competitions");
-    } else {
-        res.render("competitions/form", { result: { database_error: true } });
+    if (updateResult.changes && updateResult.changes === 1)
+    {
+        res.render("competitions/from", {result: { score_success: true } });
     }
+    else{
+        res.render("competitions/form", { result: { database_error: true}});
+    }
+});
+
+//GET /competitions/applied/:id
+router.get("/applied/:id", function (req, res, next) {
+
+    const stmt = db.prepare(`SELECT u.name AS natjecatelj, a.score, a.id_user
+    FROM competitions c, users u, apply_comp a
+    WHERE a.id_user = u.id AND a.id_competition = c.id AND a.id_competition = ?
+    ORDER BY a.score DESC;
+    `);
+
+    const result = stmt.all(req.params.id);
+
+    console.log(result);
+
+    const stmt1 = db.prepare("SELECT name AS natjecanje, apply_till AS datum FROM competitions WHERE id = ?");
+
+    const data = stmt1.all(req.params.id);
+
+    console.log(data);
+
+    res.render("competitions/applied", { result: { items: result, data }, data: { items: data } });
 });
 
 module.exports = router;

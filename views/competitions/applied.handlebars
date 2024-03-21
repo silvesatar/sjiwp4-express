@@ -1,49 +1,32 @@
-<!-- <div class="p-2">
-    <div class="overflow-x-auto">
-        <table class="table">
-
-            <thead>
-                <tr>
-                    <th>Redni broj</th>
-                    <th>Ime</th>
-                    <th>Broj bodova</th>
-                </tr>
-            </thead>
-            
-            <tbody>
-
-                {{#each result.items}}
-                <tr>
-                    <th>{{this.id}}</th>
-                    <td>{{this.name}}</td>
-                    <td>
-                        <div class="line-clamp-2">
-                            {{this.description}}
-                        </div>
-                    </td>
-                    <td x-data="{}">
-                        <span x-text="new Date('{{this.apply_till}}').toLocaleString()"></span>
-                    </td>
-                    <td>{{this.author}}</td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
-    </div>
-</div> -->
-<div class="p-2">
+<div class="min-h-screen">
     <div class="hero-content text-center">
         <div class="max-w-md">
-            <p class="pt-3">
-                Uspješno ste prijavljeni na natjecanje
-            </p>
-            <p class="py-3 text-xs brightness-50">
-                {{message}}
-            </p>
-            <a href="/" class="btn btn-primary">Naslovnica</a>
+            <h1 class="text-5xl font-bold">{{#each data.items}}{{natjecanje}}{{/each}}</h1>
+            <p class="py-6"x-data="{}"><span x-text="new Date('{{#each data.items}}{{datum}}{{/each}}'.toLocaleString()"></span></p>
+            <h2 class="text-xl font-bold">Poredak</h2>
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <!-- head -->
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Ime</th>
+                            <th>Bodovi</th>
+                        </tr>
+                    </thead>
+
+                    <!-- body -->
+                    <tbody>
+                        {{#each result.items}}
+                        <tr>
+                            <th>{{@index}}</th>
+                            <td>{{this.natjecatelj}}</td>
+                            <td>{{this.score}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    {{#if result.display_form}}
-     <form action="/competitions/applied" method="get" class="flex flex-col gap-2"></form>
-     {{/if}}
 </div>
